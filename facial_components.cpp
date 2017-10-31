@@ -82,27 +82,13 @@ void processJAFFE(string input, string output) {
         Mat img, img_gray;
         // load image
 
-//        cout << "ImagePath: " << imgPath[img_id] << endl;
-
         img = imread(imgPath[img_id], CV_LOAD_IMAGE_COLOR);
 
-//        cout<<img.elemSize1()<<endl;
-
-//        cout<<img.type()<<endl;
-        //16
-
         cvtColor(img, img_gray, CV_RGB2GRAY);
-//        img_gray = img;
         equalizeHist(img_gray, img_gray);
-
-//        Mat imgtemp = img_gray;
-
-//        cout << "1" << endl;
 
         vector<Rect> faces;
         face_cascade.detectMultiScale(img_gray, faces, 1.1, 3);
-
-//        cout << faces.size() << endl;
 
         if (faces.size() != 0) {
 
@@ -110,94 +96,38 @@ void processJAFFE(string input, string output) {
             int i = 0;
             int max_width = 0;
             for (int index = 0; index < faces.size(); index++) {
-//                cout << "for in" << endl;
                 if (faces[i].width > max_width) {
                     i = index;
                     max_width = faces[i].width;
                 }
             }
 
-//            cout << "2" << endl;
-//            cout << "i : " << i << endl;
-//            cout << faces.size() << endl;
-//        if(faces.size() != 0)
-
-
-//            cout << "sieze : " << faces[i].size() << endl;
-//            cout << "faces[i].x : " << faces[i].x << endl;
-//            cout << "faces[i].y : " << faces[i].y << endl;
-//            cout << "faces[i].x + faces[i].width : " << faces[i].x + faces[i].width << endl;
-//            cout << "faces[i].y + faces[i].height : " << faces[i].y + faces[i].height << endl;
-
-//            if (!(faces[i].width < (img_gray.cols / 3) || faces[i].height < (img_gray.cols / 3))) {
-
             int bbox[4] = {faces[i].x, faces[i].y, faces[i].x + faces[i].width, faces[i].y + faces[i].height};
 
-//                cout << "211" << endl;
             flandmark_detect(new IplImage(img_gray), bbox, model, points);
 
-//                cout << "21" << endl;
             // left eye
             Point centerLeft = Point((int) (points[2 * 6] + points[2 * 2]) / 2,
                                      (int) (points[2 * 6 + 1] + points[2 * 2 + 1]) / 2);
             int widthLeft = abs(points[2 * 6] - points[2 * 2]);
 
-//                cout << "22" << endl;
             // right eye
             Point centerRight = Point((int) (points[2 * 1] + points[2 * 5]) / 2,
                                       (int) (points[2 * 1 + 1] + points[2 * 5 + 1]) / 2);
             int widthRight = abs(points[2 * 1] - points[2 * 5]);
-
-//                cout << "23" << endl;
-//
-//                cout << "centerLeft.x + widthLeft : " << centerLeft.x + widthLeft << endl;
-//                cout << "centerRight.x - widthRight : " << centerRight.x - widthRight << endl;
             // face
-//            int widthFace = (centerLeft.x + widthLeft) - (centerRight.x - widthRight) + 15;
             int widthFace = (centerLeft.x + widthLeft) - (centerRight.x - widthRight);
-
             int heightFace = widthFace * 1.3;
-
-//            if (0 < (centerRight.x - widthFace / 4) + widthFace &&
-//                (centerRight.x - widthFace / 4) + widthFace < 255 &&
-//                0 < (centerRight.y - heightFace / 4) + heightFace &&
-//                (centerRight.y - heightFace / 4) + heightFace < 255 &&
-//                widthFace > 140 && heightFace > 170) {
-
-//
-//                    cout << "centerRight.x - widthFace/4 : " << centerRight.x - widthFace / 4 << endl;
-//                    cout << "centerRight.y - heightFace/4 : " << centerRight.y - heightFace / 4 << endl;
-//                    cout << "widthFace : " << widthFace << endl;
-//                    cout << "heightFace : " << heightFace << endl;
 
                 Mat face = img(
                         Rect(centerRight.x - widthFace / 4, centerRight.y - heightFace / 4, widthFace, heightFace));
-
-
-//                cout<<"face type : "<<face.type()<<endl;
-//                cout<<"face ele : "<<face.elemSize1()<<endl;
-
-//                face = imgtemp;
-//                    cout << "3" << endl;
-                //
                 // extract label
-//                cout << "ImagePath: " << imgPath[img_id] << endl;
                 string fileName = imgPath[img_id].substr(input.length() + 1, imgPath[i].length());
 
                 // save image
                 string curFileName = fileName;
 
                 curFileName = fileName;
-
-
-                //        curFileName.replace(fileName.length() - 4, 4, "face.tiff");
-//                    curFileName.replace(fileName.length() - 4, 4, "face.png");
-
-//                    cout << "4" << endl;
-//
-//                    cout << "FACE_IMG_WIDTH : " << FACE_IMG_WIDTH << endl;
-//                    cout << "FACE_IMG_HEIGHT : " << FACE_IMG_HEIGHT << endl;
-//                    cout << face.size << endl;
                 resize(face, face, Size(FACE_IMG_WIDTH, FACE_IMG_HEIGHT));
 
                 if(curFileName.substr(2,1) == ".")
@@ -209,19 +139,9 @@ void processJAFFE(string input, string output) {
 
                 cout << "real img num : " << real_img_num << endl;
                 real_img_num++;
-//                } else {
-//                    cout << "image's bbox scale is too small" << endl;
-//                }
-//            } else {
-//                cout << "image's flandmark_detect Error" << endl;
-//            }
         } else {
             cout << "image's detectMultiScale Error" << endl;
         }
-
-//        cout << "img num : " << img_id << endl;
-
-//        cout << "Next For ===================================================" << endl;
     }
 
     fs << "real_num_of_image" << real_img_num;

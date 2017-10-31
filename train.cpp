@@ -220,23 +220,6 @@ void svm(int num_of_label, Mat train_features, Mat train_labels, vector<string> 
 
     cout<<"svm saving.."<<endl;
     svm->save(svmDir+svmFile);
-//
-
-//     svm = Algorithm::load<ml::SVM>(svmDir+svmFile);
-
-
-//    svm->setType(ml::SVM::C_SVC);
-//    svm->setKernel(ml::SVM::LINEAR);
-//    svm->setTermCriteria(TermCriteria(TermCriteria::MAX_ITER, 100, 1e-6));
-
-
-//    normalize(test_features,test_features);
-//    cout<<test_features.row(0)<<endl;
-//    normalize(test_features.row(0),test_features.row(0));
-//    cout<<test_features.row(0)<<endl;
-//    normalize(test_features,test_features);
-
-//    normalize(test_features, test_features, 0, 1, NORM_MINMAX, CV_32F);
 
 
     cout<<"svm testing..."<<endl;
@@ -245,10 +228,6 @@ void svm(int num_of_label, Mat train_features, Mat train_labels, vector<string> 
     ///test num for
     for(int i = 0; i < test_features.rows; i++) {
         cv::Mat sample = test_features.row(i);
-//        cout<<"dample : "<<endl;
-//        cout<<sample.cols<<endl;
-//        sample.convertTo(sample,CV_32F);
-//        cout<<"test_features.row(" + to_string(i) + ") : "<<test_features.row(i)<<endl;
         float predict = svm->predict(sample);
 
         predicted.at<float>(i, (int) predict) = 1.0f;
@@ -276,18 +255,6 @@ void knn(int num_of_label, Mat train_features, Mat train_labels, vector<string> 
     Ptr<ml::KNearest> knn = ml::KNearest::create();
     Ptr<ml::TrainData> trainData = ml::TrainData::create(train_features, ml::SampleTypes::ROW_SAMPLE, labels);
     knn->train(trainData);
-
-
-//    string knnDir = output_folder+"/";
-//
-//    string knnDir = "/Users/joju/OpenCVBlueprints/chapter_3/jaffe2_result/";
-//    string knnFile = "KnnClassifier.xml";
-//    knn->save(knnDir+knnFile);
-
-
-//    Ptr<ml::KNearest> knn1 = ml::KNearest::load(knnDir+knnDir);
-//
-//    Ptr<ml::KNearest> knn1 = Algorithm::load<ml::KNearest>(knnDir+knnDir);
 
 
     cv::Mat predicted = Mat::zeros(test_labels.rows, num_of_label, CV_32F);
@@ -321,24 +288,7 @@ void bayes(int num_of_label, Mat train_features, Mat train_labels, vector<string
     string bayesFile = "bayesClassifier.xml";
 
 
-
     Ptr<ml::NormalBayesClassifier> bayes = ml::NormalBayesClassifier::create();
-
-
-
-
-//    cout<<"bayes training..."<<endl;
-//    Ptr<ml::TrainData> trainData = ml::TrainData::create(train_features, ml::SampleTypes::ROW_SAMPLE, labels);
-//    bayes->train(trainData);
-
-
-//    cout<<"bayes saving.."<<endl;
-//    bayes->save(bayesDir+bayesFile);
-
-
-
-
-//        Ptr<ml::NormalBayesClassifier> bayes1 = ml::NormalBayesClassifier::load(bayesDir+bayesFile);
 
     bayes = Algorithm::load<ml::NormalBayesClassifier>(bayesDir+bayesFile);
 
